@@ -1,197 +1,299 @@
-\documentclass[review,3p]{elsarticle}
-%\documentclass[5p]{elsarticle}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[12pt]{wssci}
 
-\usepackage{graphicx}               % Include figure files
+\usepackage{url}
+\usepackage{graphicx}
+\usepackage{graphicx}
+\usepackage{epic,eepic}
+\usepackage{amsmath}
+\usepackage{wasysym}
 \usepackage{array}
-\usepackage{amsmath} 
-\usepackage{amssymb} 
-\usepackage{bm}                     % bold math
-\usepackage{caption}
-\usepackage{subcaption}
-\usepackage{lineno}
-\usepackage[mathcal]{euscript}
-\usepackage{xcolor}                  % coloring text
+\usepackage{color}
+\usepackage[normalem]{ulem}         % for uline
+\usepackage{wrapfig}
+%\usepackage{textcomp}
+\usepackage{outlines}
+\usepackage{url}
+\usepackage{array}
+\usepackage{newtxtext,newtxmath}
 
-\usepackage{lipsum}
+\usepackage{biblatex}
+\addbibresource{references.bib}
+%======================================================================
+\newcommand\papertopic{Turbulent Flames}
+\newcommand\tprime{\prime\prime\prime}
+%======================================================================
 
-\newcommand{\prtl}[2]{\frac{\partial #1}{\partial #2}}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\title{Modeling Soot in Oxy-Coal Combustion Systems using Large Eddy Simulations}
+
+\author[1]{Kamron Brinkerhoff}
+\author[1]{Alex Josephson}
+\author[2]{Ben Isaac}
+\author[2]{Jeremy Thornock}
+\author[1]{Andrew Fry}
+\author[1,*]{David Lignell}
+
+\affil[1]{Department of Chemical Engineering, Brigham Young University, Provo, UT, 84602, United States}
+\affil[2]{Department of Chemical Engineering, University of Utah, Salt Lake City, UT 84112, United States}
+\affil[*]{Corresponding author: \email{davidlignell@byu.edu}}
+
 
 \begin{document}
+\maketitle
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%\preprint{}
-
-\title{Evaluation of Stochastic Particle Dispersion Modeling in \\ Turbulent Round Jets} 
-
-\author[byu]{Guangyuan Sun}
-\ead{gysungrad@gmail.com}
-\author[snl]{John C. Hewson}
-\ead{jchewso@sandia.gov}
-\author[byu]{David O. Lignell\corref{cor1}\fnref{fn1}}
-\ead{davidlignell@byu.edu}
-
-\address[byu]{350 CB, Brigham Young University, Provo, UT 84602, USA}
-\address[snl]{Fire Science and Technology Department, Sandia National Laboratories, Albuquerque, NM, USA}
-\cortext[cor1]{Corresponding author}
-\fntext[fn1]{Phone: (801) 422-1772}
-
-\journal{International Journal of Multiphase flow}
-
-\date{\today}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{abstract}
-
-\lipsum[1]     % replace this with your abstract text
-
+%====================================================================
+\begin{abstract} % not to exceed 200 words
+    Soot in coal combustion simulations is often ignored due to its computational complexity, despite its significant effect on flame temperature and radiation.  In this research, soot formation was investigated using Large Eddy Simulations (LES).  Simulations were performed for a 40 kW pilot-scale coal combustor and compared to published experimental data.  Soot was modeled using a detailed monodisperse soot model that was recently developed.  Future work will compare current simulations with new simulations that neglect soot in order to determine the effect of soot on flame properties.  
 \end{abstract}
 
-\begin{keyword} 
-jet \sep particle dispersion \sep one dimensional turbulence \sep ODT
+\begin{keyword}
+    Coal\sep Soot\sep LES\sep 
 \end{keyword}
 
-%-----------------------------------------------------------------------------------
+%====================================================================
+\section{Introduction}
 
-\maketitle     
+%You can use the following cite commands:
+%Single reference with number only: \cite{Zhao2013}
+%Multiple references with number only: \cite{Affleck1967,Turanyi2014,uconnrcmpy}
+%Single reference with two or fewer authors: \textcite{Affleck1967}
+%Single reference with three or more authors: \textcite{Wang2011}
+%Two references with authors: \textcite{Kee1996,Baumgardner2013}
+%Three or more references with authors: \textcite{Kee1996,Baumgardner2013,Haworth2011}
 
-%-----------------------------------------------------------------------------------
+	Coal currently provides 30\% of total energy worldwide \cite{DoE2019} 
+but has an uncertain future due to concerns with with pollutants, especially carbon dioxide.  Methods to reduce carbon dioxide emmissions include cryogenic carbon capture \cite{Fazlollahi2015}, solvent absorption \cite{Yang2008}, and oxy-coal combustion.  While the first two examples separate CO2 from the flue gas, which is mainly nitrogen, oxy-coal combustion separates oxygen from nitrogen prior to combustion, and requires a much simpler separation of CO2 from water in the flue gas.   An additional benefit of oxy-combustion is that it reduces NO$_x$ formation since nitrogen is absent from the oxidizer stream.  
 
-\linenumbers
+	Oxy-coal combustion has several obstacles that prevent its wide usage.  Separating oxygen from air is difficult, as it uses a great deal of energy and requires purchasing and installing additional equipment.  Using pure oxygen also alters combustion properties, such as soot concentration and flame temperature.  Since high temperatures cause combustor materials to fail, the flame must be cooled by recirculating exhaust gas to dilute the reactant stream \cite{Kather2009}.  This complicates designing oxy-coal facilities. 
 
-\section{Introduction}      \label{sec:intro}
+	These difficulties have motivated researchers to develop computer simulations to help design oxy-coal combustion plants.  Although much can be learned from experiments, they are often unable to accurately measure all relevant combustion properties.  Simulations, if performed accurately, can provide considerably more detail than what could be measured in an experiment.  
+ \section{Previous Work}
+	 Most coal simulations use either Reynolds-Averaged Numerical Simulation (RANS), or Large Eddy Simulation (LES).  RANS averages all turbulent velocity fluctuations over time, sacrificing accuracy for low computational cost.  LES is more accurate but more computationally expensive, resolving large fluctuations or eddies while modeling smaller ones.  This compromise preserves the most important combustion details while still having lower computational costs compared to Direct Numerical Simulation, which resolves all turbulent fluctuations and is too computationally expensive for most coal combustion applications \citep{Luo2012}.  Several studies have documented the tradeoffs between LES and RANS  for coal combustion \citep{Yamamoto20111771} \citep{Gharebaghi2011} \citep{Edge2011} \citep{Stein2012} \citep{Warzecha2014732}.  Because of their differences, LES is often performed on smaller combustors compared to RANS.    
+	
+%TODO: Add jovanovic 2013,	
+		
+	
+	The first coal LES simulations focused on generic solid-fuel combustion \citep{Kurose2003}, and subsequent simulations modeled oxy-coal jet flames \citep{Yamamoto20111771}, lab-scale burners\citep{Stein2012}, and industrial-sized burners \citep{Kurose2009} \citep{Gharebaghi2011}.  These simulations ignored soot formation due to the complexity of the tar precursors.  Because soot affects flame temperature through radiative heat transfer, other research has indicated that neglecting soot in simulations introduces significant error for coal-air flames \cite{Xu2017}\cite{Takahashi2019}.  Xu et al. \cite{Xu2017}, simulated coal soot formation in a jet flame using the mechanism proposed by Brown et al. \cite{Brown1998}.  They found that including soot formation decreased the flame temperature by about 238 K due to radiative heat loss.  Experimental measurements matched closest to the cases where soot was included, although the experimental temperatures were still slightly lower.  A similar study \cite{Takahashi2019} found that neglecting soot in a 4kw jet burner decreased flame temperature by 100 K.  The simulations proposed in this project will model soot in an pilot-scale oxy-coal combustor in preparation for future work, where we will determine soot's affect on temperature and flame properties by comparing current simulations with new simulations that neglect soot.  Since oxy-coal flames typically have more soot than air flames \cite{Stimpson2013}, neglecting soot would likely decrease temperature more than in an air-coal flame. 
 
-\lipsum[2]     % replace this with your abstract text
 
-Belaying pin loot Yellow Jack run a shot across the bow plunder provost nipper gangway brig port. Snow bowsprit deadlights yawl \cite{Lignell_2011} fathom grog blossom booty black spot gun starboard. Draft log hornswaggle Sea Legs bring a spring upon her cable draught gabion grapple overhaul spyglass \cite{Ferziger_2002, Cantera_new}.
+\subsection{Soot Modeling}
 
-Measured fer yer chains aye black spot crimp Brethren of the Coast carouser handsomely bilge hempen halter lee. Mizzenmast flogging furl take a caulk fathom walk the plank sloop Shiver me timbers Jack Tar gibbet. Coxswain ho smartly scurvy snow red ensign grapple poop deck Pieces of Eight quarter.
+	Our simulations will use a detailed monodisperse coal soot model recently developed by Josephson et. al.\cite{Josephson2019}.  Prior to this model's development, the most advanced coal soot model was the Brown model \cite{Brown1998}, a semiempirical model.  Josephson's improves on the Brown model in several ways. First, it models the soot processes that the Brown model neglects, i.e. soot surface growth, soot gasification, tar deposition, and tar cracking.  See table \ref{f:soot} for a schematic of soot processes.  Second, it utilizes collision rates derived from kinetic collision theory to calculate nucleation, coagulation, and tar deposition.  Third, it uses improved oxidation and gasification rates obtained using Bayesian statistics \cite{Josephson2017}.  
+	%
+%\begin{figure}[htpb]
+  %  \centering
+    %\includegraphics[width=4in]{soot_model_diagram2_bw.png}
+    %\caption{Overview of soot processes}
+    %\label{fig:soot}
+%\end{figure}  
+	
+\begin{figure}
+\begin{center}
+\begin{tabular}{c}
+\includegraphics[width=4 in]{../figures/soot_model_Diagram2_bw.png}
+\end{tabular}
+\caption{Schematic of coal and soot processes}
+\label{f:soot}
+\end{center}
+\end{figure}	
 
-Quarterdeck prow hardtack main sheet warp starboard crow's nest reef jib shrouds. Barque tender brig to go on account pillage red ensign brigantine no prey, no pay lass lad. Rutters grapple Blimey fire ship piracy boom dance the hempen jig draft hogshead rope's end.
+\subsection{Computational tools}
+	This simulation will be run on Arches, a finite-volume LES code developed by the University of Utah, will be used for this project's simulations. It is parallelized on a C++ framework called Uintah.  It uses Message Passing Interface (MPI) to parallelize. Arches spatially and temporally solves mass, momentum, energy, and mixture fraction balances for low mach and variable density flows.  Favre filtering is used to remove small-scale turbulent fluctuations.  The dynamic Smagorinsky model is used to calculate the subgrid scale stress tensor.    It uses Direct Quadrature Method Of Moments (DQMOM) to represent coal particle size distributions  \cite{Pedel2012} \cite{Abboud2015} \cite{Marchisio2005}.  Arches uses the First Order With Yield (FOWY) model for coal devolatilization \cite{Schroeder2015}, the Smith model for char oxidation \cite{Smith1980}, and the discrete ordinates method to solve for radiation \cite{Modest2013541}.  
 
-%-----------------------------------------------------------------------------------
 
-\section{Numerical description} \label{s:model}
+\subsection{Simulation Details}
 
-\lipsum[1]
-%
-\begin{equation}
-    \frac{dU_i}{dt} =-\frac{1}{\rho\triangle
-    y}\left(\sigma_{i,e}-\sigma_{i,w}\right),
-    \label{e:viscousEvol}
-\end{equation}
-%
+The simulation will model the Oxy-Fuel Combustor (OFC) at BYU.  It will be validated using the experimental measurements of Stimpson et. al \cite{Stimpson2013}.  The OFC is a 1.7m long, 0.6m diameter reactor with a firing rate of 40 kW.  See Figure \ref{f:OFC} for a schematic.  Our simulation will include the burner zone of the reactor and the and the transition zone leading to the radiant section.  It uses Skyline coal with a stoichiometric ratio of 0.9.  The oxidizer stream is diluted with recycled $CO_2$ in order to reduce flame temperatures.  The simulation uses 21.5 million grid cells arranged as 425 X 225 X 225.  The simulation ran until it reached steady state after 7.5 seconds, after which it ran for another 5 seconds %(boundary/initial conditions?  )
 
-\lipsum[1]
-%
-\begin{align}
-    \frac{dr_{i}}{dt} & =U_{p,i}, \label{e:ppos}\\
-    \frac{dU_{p,i}}{dt} & =-\frac{U_{p,i}-U_{g,i}}{\tau_{p}}f+g_{i}, \label{e:pmom}
-\end{align}
-%
-\lipsum[1]
-%
-\begin{equation}
-    f\left(y\right) = y_0 + 
-    \begin{cases} 
-        3\left(y-y_0\right) & \quad \text{if $y_0\leq y \leq y_0+1/3l$,}\\
-        2l-3\left(y-y_0\right) & \quad \text{if $y_0+1/3l\leq y \leq y_0+2/3l$,}\\
-        3\left(y-y_0\right)-2l & \quad \text{if $y_0+2/3l\leq y \leq y_0+l$,}\\
-        y-y_0 & \quad \text{otherwise.}
-    \end{cases}
-\end{equation}
-%
 
-%-----------------------------------------------------------------------------------
-
-\section{Results} \label{s:results}
-
-\lipsum[1]
 
 \begin{figure}
-    \centering
-    \includegraphics[width=0.5\textwidth]{../figures/fig_sample/fig_sample.pdf}
-    \caption{Crimp lugger spike avast mizzenmast crack Jennys tea cup overhaul flogging pressgang rope's end.}
-    \label{f:sample_1}
+\begin{center}
+\begin{tabular}{c}
+\includegraphics[width=2 in]{../figures/OFC_pic.jpg}
+\end{tabular}
+\caption{OFC schematic.}
+\label{f:OFC}
+\end{center}
 \end{figure}
 
-\lipsum[1]
 
-%
-\begin{figure}
-    \begin{center}
-        \begin{tabular}{c c}
-            (a) & (b) \\
-            \includegraphics[width=3 in]{../figures/fig_sample/fig_sample.pdf} &
-            \includegraphics[width=3 in]{../figures/fig_sample/fig_sample.pdf} \\
-            (c) & (d) \\
-            \includegraphics[width=3 in]{../figures/fig_sample/fig_sample.pdf} &
-            \includegraphics[width=3 in]{../figures/fig_sample/fig_sample.pdf} \\
-        \end{tabular}
-    \end{center}
-    \caption{Prow scuttle parrel provost Sail ho shrouds spirits boom mizzenmast yardarm.} 
-    \label{f:sample_2}
-\end{figure}
 
-%-----------------------------------------------------------------------------------
 
-\subsection{Isothermal case} \label{s:isothermal}
-
-\lipsum[1]
-
-\begin{table}
-    \caption{}
-    \label{t:JetInitial}
-    \begin{center}
-        \begin{tabular} {l | c| c| c}
-            \hline
-            & $Re = 10000$ & $Re = 20000$ & $Re = 30000$ \\
-            \hline
-            \hline
-            $U_{g0}$  &  $21.5$ m/s    &  $43$  m/s     & $64.5$  m/s   \\ 
-            $U_{p0}$ $(60\, \mu m)$    & $17.5$ m/s    & $30$ m/s     & $46$ m/s   \\ 
-            $St$ $(60\, \mu m)$	 & $26$          & $53$         & $77$       \\ 
-            $U_{p0}$ $(90\, \mu m)$    & $15$ m/s    & $32$ m/s     & $51.5$ m/s   \\ 
-            $St$ $(90\, \mu m)$	 & $61$          & $122$         & $178$      \\ 
-            \hline 
-        \end{tabular}
-    \end{center}
+\begin{table}[h]
+	\caption{Proximate Analysis.}
+	\label{t:prox}
+	\centering
+	\begin{tabular}{l l l}
+	\hline
+	Component & wt\% \\ \hline
+    Moisture & 3.18 \\ 
+    Ash & 8.83 \\ 
+    Volatile matter & 38.6  \\ 
+    Fixed Carbon & 49.39  \\ 
+\hline
+\end{tabular}
 \end{table}
+
+
+\begin{table}[!h]
+	\caption{Ultimate Analysis.}
+	\label{t:ult}
+	\centering
+	\begin{tabular}{l l l}
+	\hline
+	Component & wt\% \\ \hline
+	Carbon & 80.24 \\ 
+    Hydrogen & 5.74 \\ 
+    Nitrogen & 1.61 \\ \
+    Sulfur & 0.60 \\ 
+    Oxygen & 11.81 \\ 
+\hline
+\end{tabular}
+\end{table}
+
+
+\begin{table}[!h]
+	\caption{Heating value (KJ/kg).}
+	\label{t:heat}
+	\centering
+	\begin{tabular}{l l l}
+	\hline
+	
+	As received & 29,321 \\ 
+    Dry, ash free & 33,323 \\ 
+\hline
+\end{tabular}
+\end{table}
+
+
+\begin{table}[!h]
+	\caption{Flow rate (kg/s).}
+	\label{t:flowrates}
+	\centering
+	\begin{tabular}{l l l}
+	\hline
+	Stream & Flow Rate (kg/s)  \\ \hline
+	Primary Coal & 1.242E-3  \\ 
+    Primary $O_2$ & 3.432E-4\\ 
+    Primary $CO_2$ & 2.210E-3  \\ 
+    
+    Secondary $O_2$ & 2.112E-3 \\ 
+    Secondary $CO_2$ & 6.263E-3  \\ 
+    Staging $O_2$ & 6.400E-4\\ 
+    Staging $CO_2$ & 2.210E-3  \\
+    Purge $CO_2$  & 1.065E-3  \\ 
+	
+\hline
+\end{tabular}
+\end{table}
+
+The reactor uses 4 input streams whose names and flowrates are listed in table \ref{t:flowrates}.  The primary stream is a central tube entering the reactor and the secondary stream is an annulus surrounding the primary tub.  The staging stream is used to add extra oxygen near the exit to ensure that combustion products are fully oxidized.  Lastly, the purge stream is an inlet on the side of the reactor to prevent ash deposition on windows used for optical measurements.  
+
+\begin{table}[!h]
+	\caption{}
+	\label{t:stream_temperatures}
+	\centering
+	\begin{tabular}{l l l}
+	\hline
+	Stream & Temperature(K) \\ \hline
+    Primary & 366.5 \\ 
+    Secondary & 529.4  \\ 
+    Staging  & 294.2 \\ 
+    Purge  & 294.2 \\ 
+	
+\hline
+\end{tabular}
+\end{table}
+
+
+
+\section{Results and Discussion}
 %
+Figure \ref{f:results1} depicts flame properties in the central cross-section of the OFC.  
+Note that the flame is quite lifted.  Soot appears to form prior to coal ignition as devolatilization begins, and most of the soot is oxidized before it can exit the flame.  Figure \ref{f:results2} depicts the same flame properties averaged over time.  Table \ref{t:temperatures} compare simulation flame temperatures with experimental measurements, showing close agreement with less than 3\% error.  Since the visualization software reports gas temperatures, they must be converted to the corresponding thermocouple temperatures when comparing with the experimental data.   Temperature corrections are calculated using Equation \ref{e:thermocouple}, and the results are included in table \ref{t:temperatures}.  Species concentrations, on the other hand, had larger errors, likely a result of incomplete char oxidation in the experiment that was not accurately represented in the simulation.  Table \ref{t:concentrations} depicts these values.  
 
-Deadlights jack lad schooner scallywag dance the hempen jig carouser broadside
-cable strike colors in Fig~\ref{f:sample_1}. Bring a spring upon her cable holystone blow the man down
-spanker Shiver me timbers to go on account lookout wherry doubloon chase. Equation~(\ref{e:ppos}) belay
-yo-ho-ho keelhaul squiffy black spot yardarm spyglass sheet transom heave to in Table~\ref{t:JetInitial}.
+\begin{figure}[!h]
+\begin{center}
+\begin{tabular}{c}
+\includegraphics[width=6 in]{../figures/resultsB.png}
+\end{tabular}
+\caption{Instantaneous cross sections of the OFC after 12.5 seconds, where T(K) refers to temperature, Y refers to species mass fractions, and $N_{soot}$ refers to soot number density.  Mixture fraction 2 represents a stream consisting of mostly carbon dioxide and water }
+\label{f:results1}
+\end{center}
+\end{figure}
 
-%-----------------------------------------------------------------------------------
+\begin{figure}[!h]
+\begin{center}
+\begin{tabular}{c}
+\includegraphics[width=6 in]{../figures/results_averaged.png}
+\end{tabular}
+\caption{ Time averaged cross sections of the OFC from 7.5 seconds to 12.5 seconds. }
+\label{f:results2}
+\end{center}
+\end{figure}
 
-\section{Discussion} \label{s:discussion}
+\begin{equation} \label{e:thermocouple}
+h_{C}(T_{g}-T_{t})=\epsilon\sigma(T_{t}^4-q_{in})\\.
+\end{equation}
 
-\lipsum[1]
+\begin{table}[!h]
+	\caption{Where locations 1,2, and 3 refer to axial distances of 0.2m, 0.62m, and 1.02m respectively  }
+	\label{t:temperatures}
+	\centering
+	\begin{tabular}{ | l | l | l | l |}
+	\hline
+       & location 1 & location 2 & location 3 \\ \hline
+    Simulation (gas) & 1255.7 K & 1266.1 K & 1315.4 \\ 
+    Simulation (thermocouple) & 1225.9 K & 1248.7 K & 1283.5 K \\ 
+    Experiment (thermocouple) & 1249.5  K & 1287.5 K & 1281 K \\ 
+    \hline
+    \end{tabular}
+\end{table}
 
-%-----------------------------------------------------------------------------------
 
-\section{Conclusions} \label{s:conclusions}
+\begin{table}[!h]
+	\caption{Mass percentages at OFC exit }
+	\label{t:concentrations}
+	\centering
+	\begin{tabular}{ | l | l | l | l |}
+	\hline
+	    & $CO_2$ & $O_2$   \\ \hline
+    Simulation &  0.932 & 0.0288   \\ 
+    Experiment  & 0.955 & 0.0336  \\  
+\hline
+\end{tabular}
+\end{table}
 
-\lipsum[1]
 
-%-----------------------------------------------------------------------------------
+ 
 
-\section*{Acknowledgments}
-This work was supported by the Defense Threat Reduction Agency under Award
-Number HDTRA-11-4503I.  Sandia National Laboratories is a multi-program
-laboratory managed and operated by Sandia Corporation, a wholly owned
-subsidiary of Lockheed Martin Corporation, for the U.S. Department of Energy's
-National Nuclear Security Administration under contract DE-AC04-94AL85000.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\bibliographystyle{elsarticle-num}
-\bibliography{references}
+Figure \ref{f:fvplot} depicts time-averaged line of sight soot measurements perpendicular to the reactor.  The simulation differs from the experiment by as much as an entire order of magnitude.  A possible explanation for this is that the flame in the simulation is more lifted than in the experiment, shifting the area of highest soot concentration farther down the reactor.  Although Stimpson et al \cite{Stimpson2013} indicated that the flame was lifted, they did not specify how much, and this uncertainty could affect soot concentration.  Alternatively, the error could be because of the inherent difficulty in accurately modeling and predicting soot concentrations for coal combustion, as errors in this field are often as large as an order of magnitude. 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[!h]
+\begin{center}
+\begin{tabular}{c}
+\includegraphics[width=4 in]{../figures/fv_plot/fv_plot.pdf}
+\end{tabular}
+\caption{   }
+\label{f:fvplot}
+\end{center}
+\end{figure}
+
+
+\section{Conclusions}
+%
+	Large Eddy Simulations of Oxy-coal combustion with soot formation included were performed with acceptable agreement with experimental data.  Areas of improvement include soot volume fraction, flame liftoff height, and oxygen concentrations at the burner exit.  Further research will compare current simulations with new simulations that neglect soot, in order to determine the effect of soot on flame temperature.
+
+
+
+\section{Acknowledgements}
+This work was supported by the Department of Energy, National Nuclear Security Administration under Award DE-NA0002375.
+
+%\noindent\textbf{Page Limits:} The total length of the paper including references should be limited to 10 pages.
+
+\printbibliography
 
 \end{document}
