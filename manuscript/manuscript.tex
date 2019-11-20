@@ -1,5 +1,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\documentclass[12pt]{wssci}
+\documentclass[review,3p]{elsarticle}
+%\documentclass[5p]{elsarticle}
 
 \usepackage{url}
 \usepackage{graphicx}
@@ -20,26 +21,38 @@
 \usepackage{biblatex}
 \addbibresource{references.bib}
 %======================================================================
-\newcommand\papertopic{Turbulent Flames}
 \newcommand\tprime{\prime\prime\prime}
+\newcommand{\prtl}[2]{\frac{\partial #1}{\partial #2}}
 %======================================================================
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\preprint{}
 
 \title{Modeling Soot in Oxy-Coal Combustion Systems using Large Eddy Simulations}
 
-\author[1]{Kamron Brinkerhoff}
-\author[1]{Alex Josephson}
-\author[2]{Ben Isaac}
-\author[2]{Jeremy Thornock}
-\author[1]{Andrew Fry}
-\author[1,*]{David Lignell}
+\author[byu]{Kamron Brinkerhoff}
+\author[lanl]{Alex Josephson}
+\author[llnl]{Ben Isaac}
+\author[uofu]{Jeremy Thornock}
+\author[byu]{Andrew Fry}
+\author[byu,*]{David Lignell\corref{cor1}}
+\ead{davidlignell@byu.edu}
 
-\affil[1]{Department of Chemical Engineering, Brigham Young University, Provo, UT, 84602, United States}
-\affil[2]{Department of Chemical Engineering, University of Utah, Salt Lake City, UT 84112, United States}
-\affil[*]{Corresponding author: \email{davidlignell@byu.edu}}
+\address[byu]{350 CB, Brigham Young University, Provo, UT 84602, USA}
+\address[lanl]{350 CB, Brigham Young University, Provo, UT 84602, USA}
+\address[llnl]{350 CB, Brigham Young University, Provo, UT 84602, USA}
+\address[uofu]{350 CB, Brigham Young University, Provo, UT 84602, USA}
+\cortext[cor1]{Corresponding author}
 
+\journal{Combustion and Flame}
 
-\begin{document}
-\maketitle
+\date{\today}
+
 
 %====================================================================
 \begin{abstract} % not to exceed 200 words
@@ -49,6 +62,10 @@
 \begin{keyword}
     Coal\sep Soot\sep LES\sep 
 \end{keyword}
+
+\maketitle     
+
+\linenumbers
 
 %====================================================================
 \section{Introduction}
@@ -294,6 +311,11 @@ This work was supported by the Department of Energy, National Nuclear Security A
 
 %\noindent\textbf{Page Limits:} The total length of the paper including references should be limited to 10 pages.
 
-\printbibliography
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\bibliographystyle{elsarticle-num}
+\bibliography{references}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \end{document}
