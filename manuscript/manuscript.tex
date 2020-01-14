@@ -1,30 +1,20 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \documentclass[review,3p]{elsarticle}
 %\documentclass[5p]{elsarticle}
 
-\usepackage{url}
-\usepackage{graphicx}
-\usepackage{graphicx}
-\usepackage{epic,eepic}
-\usepackage{amsmath}
-\usepackage{wasysym}
+\usepackage{graphicx}               % Include figure files
 \usepackage{array}
-\usepackage{color}
-\usepackage[normalem]{ulem}         % for uline
-\usepackage{wrapfig}
-%\usepackage{textcomp}
-\usepackage{outlines}
-\usepackage{url}
-\usepackage{array}
-\usepackage{newtxtext,newtxmath}
+\usepackage{amsmath} 
+\usepackage{amssymb} 
+\usepackage{bm}                     % bold math
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{lineno}
+\usepackage[mathcal]{euscript}
+\usepackage{xcolor}                  % coloring text
 
-\usepackage{biblatex}
-\addbibresource{references.bib}
-%======================================================================
-\newcommand\tprime{\prime\prime\prime}
+\usepackage{lipsum}
+
 \newcommand{\prtl}[2]{\frac{\partial #1}{\partial #2}}
-%======================================================================
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{document}
@@ -53,23 +43,26 @@
 
 \date{\today}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%====================================================================
-\begin{abstract} % not to exceed 200 words
-    Soot in coal combustion simulations is often ignored due to its computational complexity, despite its significant effect on flame temperature and radiation.  In this research, a 40 kW oxy-coal combustion system is modeled using Large Eddy Simulations (LES) and a detailed monodisperse coal soot model. Cases where soot is modeled are compared with cases where soot is neglected to determine the accuracy benefits and computational costs of modeling soot.
+\begin{abstract}
 
+Soot in coal combustion simulations is often ignored due to its computational complexity, despite its significant effect on flame temperature and radiation.  In this research, a 40 kW oxy-coal combustion system is modeled using Large Eddy Simulations (LES) and a detailed monodisperse coal soot model. Cases where soot is modeled are compared with cases where soot is neglected to determine the accuracy benefits and computational costs of modeling soot.
 
 \end{abstract}
 
-\begin{keyword}
-    Coal\sep Soot\sep LES\sep 
+\begin{keyword} 
+Coal\sep Soot\sep LES\sep 
 \end{keyword}
+
+%-----------------------------------------------------------------------------------
 
 \maketitle     
 
+%-----------------------------------------------------------------------------------
+
 \linenumbers
 
-%====================================================================
 \section{Introduction}
 
 %You can use the following cite commands:
@@ -301,12 +294,11 @@ Figure \ref{f:fvplot} depicts time-averaged line of sight soot measurements perp
 \end{center}
 \end{figure}
 
+%--------------------------------------------------------------------------------
 
 \section{Conclusions}
 %
 	Large Eddy Simulations of Oxy-coal combustion with soot formation included were performed with acceptable agreement with experimental data.  Areas of improvement include soot volume fraction, flame liftoff height, and oxygen concentrations at the burner exit.  Further research will compare current simulations with new simulations that neglect soot, in order to determine the effect of soot on flame temperature.
-
-
 
 \section{Acknowledgements}
 This work was supported by the Department of Energy, National Nuclear Security Administration under Award DE-NA0002375.
@@ -314,11 +306,6 @@ This work was supported by the Department of Energy, National Nuclear Security A
 %\noindent\textbf{Page Limits:} The total length of the paper including references should be limited to 10 pages.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 
 \bibliographystyle{elsarticle-num}
 \bibliography{references}
