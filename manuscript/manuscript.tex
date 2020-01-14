@@ -56,7 +56,9 @@
 
 %====================================================================
 \begin{abstract} % not to exceed 200 words
-    Soot in coal combustion simulations is often ignored due to its computational complexity, despite its significant effect on flame temperature and radiation.  In this research, soot formation was investigated using Large Eddy Simulations (LES).  Simulations were performed for a 40 kW pilot-scale coal combustor and compared to published experimental data.  Soot was modeled using a detailed monodisperse soot model that was recently developed.  Future work will compare current simulations with new simulations that neglect soot in order to determine the effect of soot on flame properties.  
+    Soot in coal combustion simulations is often ignored due to its computational complexity, despite its significant effect on flame temperature and radiation.  In this research, a 40 kW oxy-coal combustion system is modeled using Large Eddy Simulations (LES) and a detailed monodisperse coal soot model. Cases where soot is modeled are compared with cases where soot is neglected to determine the accuracy benefits and computational costs of modeling soot.
+
+
 \end{abstract}
 
 \begin{keyword}
@@ -289,7 +291,7 @@ h_{C}(T_{g}-T_{t})=\epsilon\sigma(T_{t}^4-q_{in})\\.
 
 Figure \ref{f:fvplot} depicts time-averaged line of sight soot measurements perpendicular to the reactor.  The simulation differs from the experiment by as much as an entire order of magnitude.  A possible explanation for this is that the flame in the simulation is more lifted than in the experiment, shifting the area of highest soot concentration farther down the reactor.  Although Stimpson et al \cite{Stimpson2013} indicated that the flame was lifted, they did not specify how much, and this uncertainty could affect soot concentration.  Alternatively, the error could be because of the inherent difficulty in accurately modeling and predicting soot concentrations for coal combustion, as errors in this field are often as large as an order of magnitude. 
 
-\begin{figure}[!h]
+\begin{figure}[!h] 
 \begin{center}
 \begin{tabular}{c}
 \includegraphics[width=4 in]{../figures/fv_plot/fv_plot.pdf}
@@ -312,6 +314,11 @@ This work was supported by the Department of Energy, National Nuclear Security A
 %\noindent\textbf{Page Limits:} The total length of the paper including references should be limited to 10 pages.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 \bibliographystyle{elsarticle-num}
 \bibliography{references}
